@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es" >
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <title>{$fsc->page->title} &lsaquo; {if="$fsc->empresa->nombrecorto"}{$fsc->empresa->nombrecorto}{else}{$fsc->empresa->nombre}{/if}</title>
+   <meta name="description" content="{$fsc->empresa->nombre}" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <meta name="generator" content="ECON" />
+   <link rel="shortcut icon" href="view/img/favicon.ico" />
+   <link rel="stylesheet" href="view/css/bootstrap.min.css" />
+   <link rel="stylesheet" href="view/font-awesome/css/font-awesome.min.css" />
+   <link rel="stylesheet" href="plugins/adminlte/view/css/AdminLTE.min.css" />
+   <link rel="stylesheet" href="plugins/adminlte/view/css/skins/_all-skins.min.css" />
+   <link rel="stylesheet" href="view/css/datepicker.css" />
+   <link rel="stylesheet" href="view/css/custom.css" />
+   <script type="text/javascript" src="view/js/jquery.min.js"></script>
+   <script type="text/javascript" src="view/js/bootstrap.min.js"></script>
+   <script type="text/javascript" src="view/js/bootstrap-datepicker.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="view/js/jquery.autocomplete.min.js"></script>
+   <script type="text/javascript" src="plugins/adminlte/view/js/jquery.slimscroll.min.js"></script>
+   <script type="text/javascript" src="plugins/adminlte/view/js/app.min.js"></script>
+   <script type="text/javascript" src="view/js/base.js"></script>
+   <script type="text/javascript">
+      function show_precio(precio)
+      {
+         {if="FS_POS_DIVISA=='right'"}
+         return number_format(precio, {#FS_NF0#}, '{#FS_NF1#}', '{#FS_NF2#}')+' {$fsc->simbolo_divisa()}';
+         {else}
+         return '{$fsc->simbolo_divisa()}'+number_format(precio, {#FS_NF0#}, '{#FS_NF1#}', '{#FS_NF2#}');
+         {/if}
+      }
+      function show_numero(numero)
+      {
+         return number_format(numero, {#FS_NF0#}, '{#FS_NF1#}', '{#FS_NF2#}');
+      }
+   </script>
+   {loop="$fsc->extensions"}
+      {if="$value->type=='head'"}{$value->text}{/if}
+   {/loop}
+</head>
+<body class="hold-transition skin-blue sidebar-mini fixed">
+   <div class="wrapper">
+      <header class="main-header">
+         <a href="index.php" class="logo">
+            <span class="logo-mini"><b>EC</b></span>
+            <span class="logo-lg"><b>{$fsc->empresa->nombrecorto}</b></span>
+         </a>
+         <nav class="navbar navbar-static-top" role="navigation">
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+               <span class="sr-only">Menú</span>
+            </a>
+            <div class="navbar-custom-menu">
+               <ul class="nav navbar-nav">
+                  <li class="dropdown">
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="Acceso rápido">
+                        <i class="fa fa-plus-square"></i>
+                     </a>
+                     <ul class="dropdown-menu">
+                        {$menu_ar_vacio=TRUE}
+                        {loop="$fsc->user->get_menu()"}
+                           {if="$value->important"}
+                           <li><a href="{$value->url()}">{$value->title}</a></li>
+                           {$menu_ar_vacio=FALSE}
+                           {/if}
+                        {/loop}
+                        {if="$menu_ar_vacio"}
+                        <li><a href="#">Vacío</a></li>
+                        {/if}
+                     </ul>
+                  </li>
+                  
+                  
+                  {if="$fsc->get_last_changes()"}
+                  <li class="dropdown">
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-files-o hidden-xs"></i>
+                        <span class="visible-xs">Historial</span>
+                     </a>
+                     <ul class="dropdown-menu">
+                        {loop="$fsc->get_last_changes()"}
+                           <li title="{if="$value['nuevo']"}creado{else}modificado{/if} el {$value['cambio']}">
+                              <a href="{$value['url']}">
+                                 {if="$value['nuevo']"}
+                                 <i class="fa fa-file"></i>
+                                 {else}
+                                 <i class="fa fa-pencil-square-o"></i>
+                                 {/if}
+                                 {$value['texto']}
+                              </a>
+                           </li>
+                        {/loop}
+                     </ul>
+                  </li>
+                  {/if}
+                  
+                  
+                  <li class="dropdown user user-menu">
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src='{function="get_gravatar($fsc->user->email)"}' class="user-image" alt="User Image"/>
+                        <span class="hidden-xs">{$fsc->user->nick}</span>
+                     </a>
+                     <ul class="dropdown-menu">
+                        <li class="user-header">
+                           <img src='{function="get_gravatar($fsc->user->email)"}' class="img-circle" alt="User Image"/>
+                           <p>
+                              {$fsc->user->get_agente_fullname()}
+                              <small>{$fsc->user->email}</small>
+                              <small>{$fsc->user->last_login}</small>
+                           </p>
+                        </li>
+                        <li class="user-footer">
+                           <div class="pull-left">
+                              <a href="{$fsc->user->url()}" class="btn btn-default btn-flat">Perfil</a>
+                           </div>
+                           <div class="pull-right">
+                              <a href="{$fsc->url()}&logout=TRUE" class="btn btn-default btn-flat">Salir</a>
+                           </div>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+            </div>
+         </nav>
+      </header>
+      <aside class="main-sidebar">
+         <section class="sidebar">
+            <div class="user-panel">
+               <div class="pull-left image">
+                  <img src='{function="get_gravatar($fsc->user->email)"}' class='img-circle' alt='{$fsc->user->nick}'/>
+               </div>
+               <div class="pull-left info">
+                  <p>{$fsc->user->email}</p>
+                  <a href="#"><i class="fa fa-circle text-success"></i> {$fsc->user->nick}</a>
+               </div>
+            </div>
+            <ul class="sidebar-menu">
+               <li class="header">Menú</li>
+               {loop="$fsc->folders()"}
+               <li class="treeview{if="$value1==$fsc->page->folder"} active{/if}">
+                  <a href="#">
+                     {if="$value1=='admin'"}
+                     <i class="fa fa-dashcube"></i>
+                     {elseif="$value1=='compras'"}
+                     <i class="fa fa-ship"></i>
+                     {elseif="$value1=='contabilidad'"}
+                     <i class="fa fa-balance-scale"></i>
+                     {elseif="$value1=='CRM'"}
+                     <i class="fa fa-users"></i>
+                     {elseif="$value1=='informes'"}
+                     <i class="fa fa-bar-chart-o"></i>
+                     {elseif="$value1=='TPV'"}
+                     <i class="fa fa-cc-visa"></i>
+                     {elseif="$value1=='ventas'"}
+                     <i class="fa fa-shopping-cart"></i>
+                     {elseif="$value1=='comunidad'"}
+                     <i class="fa fa-comments"></i>
+                     {else}
+                     <i class="fa fa-th-large"></i>
+                     {/if}
+                     <span class="text-capitalize">{$value1}</span>
+                     <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                     {loop="$fsc->pages($value1)"}
+                     <li{if="$value2->showing()"} class="active"{/if}>
+                        <a href="{$value2->url()}">
+                           {if="$value2->name=='admin_empresa'"}
+                           <i class="fa fa-suitcase"></i>
+                           {elseif="$value2->name=='admin_home'"}
+                           <i class="fa fa-cogs"></i>
+                           {elseif="in_array($value2->name, array('admin_users','compras_proveedores','ventas_clientes','admin_agentes','community_visitantes','informe_clientes'))"}
+                           <i class="fa fa-users"></i>
+                           {elseif="$value2->name=='contabilidad_ejercicios'"}
+                           <i class="fa fa-calendar"></i>
+                           {elseif="$value2->name=='ventas_articulos' OR $value2->name=='informe_articulos' OR $value2->name=='compras_articulos'"}
+                           <i class="fa fa-cubes"></i>
+                           {elseif="$value2->name=='admin_woocommerce'"}
+                           <i class="fa fa-wordpress"></i>
+                           {elseif="$value2->name=='admin_prestashop' OR $value2->name=='pedidos_prestashop'"}
+                           <i class="fa fa-shopping-basket"></i>
+                           {elseif="$value2->name=='community_plugins'"}
+                           <i class="fa fa-puzzle-piece"></i>
+                           {elseif="$value2->name=='community_stats'"}
+                           <i class="fa fa-comments"></i>
+                           {elseif="$value2->name=='dashboard'"}
+                           <i class="fa fa-dashboard"></i>
+                           {elseif="$value2->showing()"}
+                           <i class="fa fa-check-circle"></i>
+                           {else}
+                           <i class="fa fa-circle-o"></i>
+                           {/if}
+                           {$value2->title}
+                        </a>
+                     </li>
+                     {/loop}
+                  </ul>
+               </li>
+               {/loop}
+            </ul>
+         </section>
+      </aside>
+      <div class="content-wrapper" style="background-color: white;">
+         <section class="content-header">
+            {if="$fsc->get_errors()"}
+            <div class="alert alert-danger hidden-print">
+               <ul>{loop="$fsc->get_errors()"}<li>{$value}</li>{/loop}</ul>
+            </div>
+            {/if}
+            {if="$fsc->get_messages()"}
+            <div class="alert alert-success hidden-print">
+               <ul>{loop="$fsc->get_messages()"}<li>{$value}</li>{/loop}</ul>
+            </div>
+            {/if}
+            {if="$fsc->get_advices()"}
+            <div class="alert alert-info hidden-print">
+               <ul>{loop="$fsc->get_advices()"}<li>{$value}</li>{/loop}</ul>
+            </div>
+            {/if}
+         </section>
+         
+         {include="feedback"}
+         
+         <div class="modal fade" id="modal_iframe" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                     <h4 class="modal-title">Modal title</h4>
+                  </div>
+                  <iframe src="" width="100%" height="600" frameBorder="0">
+                     Este navegador no soporta frames.
+                  </iframe>
+               </div>
+            </div>
+         </div>

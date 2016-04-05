@@ -1,0 +1,50 @@
+{include="header"}
+
+<div class="container">
+   <div class="row">
+      <div class="col-sm-12">
+         <div class="page-header">
+            <h1>
+               <span class="glyphicon glyphicon-exclamation-sign"></span>
+               Página no encontrada
+            </h1>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-sm-8">
+         <div class="panel panel-danger">
+            <div class="panel-heading">
+               <h3 class="panel-title">Ayuda</h3>
+            </div>
+            <div class="panel-body">
+               <p class="help-block">
+                  No se encuentra el controlador de esta página.
+                  Consulta con el administrador.
+               </p>
+               <ul>
+                  {if="isset($_GET['page'])"}
+                  <li>
+                     <b>¿Eres programador y estas intentando hacer un plugin?</b>
+                     <ul>
+                        <li>
+                           Entonces te comento que lo que ha pasado es que no encuentro
+                           el archivo <b>{$_GET['page']}.php</b>, que debería estar en
+                           el directorio <b>controller</b> de tu plugin.
+                        </li>
+                     </ul>
+                  </li>
+                  {/if}
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="col-sm-4">
+         <div class="thumbnail">
+            <img src="view/img/fuuu_face.png" alt="fuuuuu"/>
+         </div>
+      </div>
+   </div>
+</div>
+
+{include="footer"}

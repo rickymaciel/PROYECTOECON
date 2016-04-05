@@ -1,0 +1,238 @@
+{include="header"}
+
+<script type="text/javascript">
+   $(document).ready(function() {
+      if(window.location.hash.substring(1) == 'nuevo')
+      {
+         $("#modal_nuevo_usuario").modal('show');
+         document.f_nuevo_usuario.nnick.focus();
+      }
+      $("#b_nuevo_usuario").click(function(event) {
+         event.preventDefault();
+         $("#modal_nuevo_usuario").modal('show');
+         document.f_nuevo_usuario.nnick.focus();
+      });
+   });
+</script>
+
+<div class="container-fluid" style="margin-top: 10px; margin-bottom: 5px;">
+   <div class="row">
+      <div class="col-sm-6 col-xs-7">
+         <div class="btn-group">
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+               <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+            {if="$fsc->page->is_default()"}
+            <a class="btn btn-sm btn-default active" href="{$fsc->url()}&amp;default_page=FALSE" title="desmarcar como página de inicio">
+               <span class="glyphicon glyphicon-home"></span>
+            </a>
+            {else}
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}&amp;default_page=TRUE" title="marcar como página de inicio">
+               <span class="glyphicon glyphicon-home"></span>
+            </a>
+            {/if}
+         </div>
+         <div class="btn-group">
+            <a id="b_nuevo_usuario" class="btn btn-sm btn-success" href="#">
+               <span class="glyphicon glyphicon-plus"></span>
+               <span class="hidden-xs">&nbsp; Nuevo</span>
+            </a>
+            {loop="$fsc->extensions"}
+               {if="$value->type=='button'"}
+               <a href="index.php?page={$value->from}{$value->params}" class="btn btn-sm btn-default">{$value->text}</a>
+               {/if}
+            {/loop}
+         </div>
+      </div>
+      <div class="col-sm-6 col-xs-5 text-right">
+         <h2 style="margin-top: 0px;">Usuarios</h2>
+      </div>
+   </div>
+</div>
+
+<div role="tabpanel">
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+         <a href="#usuarios" aria-controls="usuarios" role="tab" data-toggle="tab">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            <span class="hidden-xs">&nbsp; Usuarios</span>
+            <span class="badge">{function="count($fsc->user->all())"}</span>
+         </a>
+      </li>
+      <li role="presentation">
+         <a href="#permisos" aria-controls="permisos" role="tab" data-toggle="tab">
+            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+            <span class="hidden-xs">&nbsp; Permisos</span>
+         </a>
+      </li>
+      <li role="presentation">
+         <a href="#historial" aria-controls="historial" role="tab" data-toggle="tab">
+            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+            <span class="hidden-xs">&nbsp; Historial</span>
+         </a>
+      </li>
+   </ul>
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="usuarios">
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th class="text-left">Nick</th>
+                     <th class="text-left">Email</th>
+                     <th class="text-left">Empleado</th>
+                     <th class="text-center">Administrador</th>
+                     <th class="text-left">IP</th>
+                     <th class="text-left">Página de inicio</th>
+                     <th class="text-right">Último login</th>
+                  </tr>
+               </thead>
+               {loop="$fsc->user->all()"}
+               <tr class='clickableRow{if="$value->show_last_login()=='-'"} warning{/if}' href='{$value->url()}'>
+                  <td><a href="{$value->url()}">{$value->nick}</a></td>
+                  <td>{$value->email}</td>
+                  <td>{$value->get_agente_fullname()}</td>
+                  <td class="text-center">
+                     {if="$value->admin"}<span class="glyphicon glyphicon-ok"></span>{/if}
+                  </td>
+                  <td>{if="FS_DEMO"}XX.XX.XX.XX{else}{$value->last_ip}{/if}</td>
+                  <td>{$value->fs_page}</td>
+                  <td class="text-right">{$value->show_last_login()}</td>
+               </tr>
+               {/loop}
+            </table>
+         </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="permisos">
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th class="text-left">Página</th>
+                     {loop="$fsc->user->all()"}
+                     <th colspan="2" class="text-center">
+                        <a href="{$value->url()}">
+                           <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {$value->nick}
+                        </a>
+                     </th>
+                     {/loop}
+                  </tr>
+               </thead>
+               {loop="$fsc->all_pages()"}
+                  <tr>
+                     <td>{$value->name}</td>
+                     {loop="$value->users"}
+                        <td class='text-center{if="$counter%2==0"} info{/if}'>
+                           {if="$value2['modify']"}
+                           <span class="glyphicon glyphicon-edit" aria-hidden="true" title="{$key2} puede editar en {$value1->name}"></span>
+                           {/if}
+                        </td>
+                        <td class='text-center{if="$counter%2==0"} info{/if}'>
+                           {if="$value2['delete']"}
+                           <span class="glyphicon glyphicon-trash" aria-hidden="true" title="{$key2} puede eliminar en {$value1->name}"></span>
+                           {/if}
+                        </td>
+                     {/loop}
+                  </tr>
+               {/if}
+            </table>
+         </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="historial">
+         <div class="container-fluid" style="margin-top: 10px;">
+            <div class="row">
+               <div class="col-sm-8">
+                  <p class="help-block">
+                     <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                     &nbsp; Puedes ver más detalles desde Admin &gt; Información del sistema.
+                  </p>
+               </div>
+               <div class="col-sm-4 text-right">
+                  <a href="index.php?page=admin_info" class="btn btn-xs btn-default">
+                     <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                     <span class="hidden-xs">&nbsp; Historial completo</span>
+                  </a>
+               </div>
+            </div>
+         </div>
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th class="text-left">Usuario</th>
+                     <th class="text-left">Detalle</th>
+                     <th class="text-left">IP</th>
+                     <th class="text-right">Fecha</th>
+                  </tr>
+               </thead>
+               {loop="$fsc->historial"}
+               <tr{if="$value->alerta"} class="danger"{/if}>
+                  <td><a href="index.php?page=admin_user&snick={$value->usuario}">{$value->usuario}</a></td>
+                  <td>{$value->detalle}</td>
+                  <td>{$value->ip}</td>
+                  <td class="text-right">{$value->fecha}</td>
+               </tr>
+               {else}
+               <tr class="warning">
+                  <td colspan="4">Sin resultados.</td>
+               </tr>
+               {/loop}
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal" id="modal_nuevo_usuario">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <form name="f_nuevo_usuario" class="form" role="form" action="{$fsc->page->url()}" method="post">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title">
+                  <span class="glyphicon glyphicon-user"></span> &nbsp; Nuevo usuario
+               </h4>
+            </div>
+            <div class="modal-body">
+               <div class="form-group">
+                  Nick:
+                  <input class="form-control" type="text" name="nnick" maxlength="12" autocomplete="off" required=""/>
+               </div>
+               <div class="form-group">
+                  Contraseña:
+                  <input class="form-control" type="password" name="npassword" maxlength="32"/>
+                  <label>
+                     <input type="checkbox" name="nadmin" value="TRUE"/>
+                     Administrador
+                  </label>
+               </div>
+               <div class="form-group">
+                  Email:
+                  <input class="form-control" type="text" name="nemail" autocomplete="off"/>
+               </div>
+               <div class="form-group">
+                  <a target="_blank" href="{$fsc->agente->url()}">Empleado</a>:
+                  <select name="ncodagente" class="form-control">
+                     <option value="">Ninguno</option>
+                     <option value="">------</option>
+                     {loop="$fsc->agente->all()"}
+                     <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                     {/loop}
+                  </select>
+                  <p class="help-block">
+                     Puedes tener empleados que no tengan acceso a ECON,
+                     o bien usuarios que no sean empleados, por eso está separado.
+                  </p>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+               </button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+{include="footer"}

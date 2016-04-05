@@ -1,0 +1,618 @@
+{include="header"}
+
+<script type="text/javascript" src="plugins/adminlte/view/js/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="plugins/adminlte/view/js/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="plugins/adminlte/view/js/Chart.js"></script>
+
+<link rel="stylesheet" href="plugins/adminlte/view/js/datatables/dataTables.bootstrap.css" />
+
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-sm-6">
+         <div class="btn-group">
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+               <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+            {if="$fsc->page->is_default()"}
+            <a class="btn btn-sm btn-default active" href="{$fsc->url()}&amp;default_page=FALSE" title="desmarcar como página de inicio">
+               <span class="glyphicon glyphicon-home"></span>
+            </a>
+            {else}
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}&amp;default_page=TRUE" title="marcar como página de inicio">
+               <span class="glyphicon glyphicon-home"></span>
+            </a>
+            {/if}
+         </div>
+         <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+               <i class="fa fa-calendar"></i> &nbsp;
+               {if="$fsc->intervalo=='mes'"}
+               Este mes
+               {elseif="$fsc->intervalo=='trimestre'"}
+               Este trimestre
+               {else}
+               Este año
+               {/if} &nbsp;
+               <i class="fa fa-caret-down"></i>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+               <li{if="$fsc->intervalo=='mes'"} class="active"{/if}>
+                  <a href="{$fsc->url()}&intervalo=mes">Este mes</a>
+               </li>
+               <li{if="$fsc->intervalo=='trimestre'"} class="active"{/if}>
+                  <a href="{$fsc->url()}&intervalo=trimestre">Este trimestre</a>
+               </li>
+               <li{if="$fsc->intervalo=='ano'"} class="active"{/if}>
+                  <a href="{$fsc->url()}&intervalo=ano">Este año</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+      <div class="col-sm-6 text-right">
+         <b>{$fsc->empresa->nombre}</b>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-sm-12">
+         <br/>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-lg-4 col-xs-6">
+         <div class="small-box bg-green-gradient">
+            <div class="inner">
+               <h3>{$fsc->show_precio($fsc->total_ventas)}</h3>
+               {if="$fsc->por_ventas >= 100"}
+               <p><i class="fa fa-caret-up"></i>&nbsp;{$fsc->por_ventas-100}&nbsp;%</p>
+               {else}
+               <p><i class="fa fa-caret-down"></i>&nbsp;{$fsc->por_ventas*-1+100}&nbsp;%</p>
+               {/if}
+            </div>
+            <div class="icon">
+               <i class="fa fa-shopping-cart"></i>
+            </div>
+            <p class="small-box-footer">TOTAL VENTAS</p>
+         </div>
+      </div>
+      <div class="col-lg-4 col-xs-6">
+         <div class="small-box bg-red-gradient">
+            <div class="inner">
+               <h3>{$fsc->show_precio($fsc->total_compras)}</h3>
+               {if="$fsc->por_compras >= 100"}
+               <p><i class="fa fa-caret-up"></i>&nbsp;{$fsc->por_compras-100}&nbsp;%</p>
+               {else}
+               <p><i class="fa fa-caret-down"></i>&nbsp;{$fsc->por_compras*-1+100}&nbsp;%</p>
+               {/if}
+            </div>
+            <div class="icon">
+               <i class="fa fa-ship"></i>
+            </div>
+            <p class="small-box-footer">TOTAL COMPRAS</p>
+         </div>
+      </div>
+      <div class="col-lg-4 col-xs-6">
+         <div class="small-box bg-blue-gradient">
+            <div class="inner">
+               <h3>{$fsc->show_precio($fsc->beneficio)}</h3>
+               {if="$fsc->por_beneficio >= 100"}
+               <p><i class="fa fa-caret-up"></i>&nbsp;{$fsc->por_beneficio-100}&nbsp;%</p>
+               {else}
+               <p><i class="fa fa-caret-down"></i>&nbsp;{$fsc->por_beneficio*-1+100}&nbsp;%</p>
+               {/if}
+            </div>
+            <div class="icon">
+               <i class="fa fa-line-chart"></i>
+            </div>
+            <p class="small-box-footer">BENEFICIO</p>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-8">
+         <p><strong>Ventas: {$fsc->desde} - {$fsc->hasta}</strong></p>
+         <div class="box box-success">
+            <div class="box-body">
+               <div class="chart">
+                  <canvas id="myChart" style="height:230px"></canvas>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-4">
+         <p class="text-right">
+            <strong>Impuestos: {$fsc->imp_desde} - {$fsc->imp_hasta}</strong>
+         </p>
+         <!-- {$max=max(array($fsc->repercutido,$fsc->soportado,$fsc->irpf,$fsc->diferencia))} -->
+         <div class="progress-group">
+            <span class="progress-text">{#FS_IVA#} repercutido</span>
+            <span class="progress-number"><b>{$fsc->show_precio($fsc->repercutido)}</b></span>
+            <div class="progress sm">
+               <div class="progress-bar progress-bar-green" style='width: {function="round($fsc->repercutido/$max*100)"}%'></div>
+            </div>
+         </div>
+         <div class="progress-group">
+            <span class="progress-text">{#FS_IVA#} soportado</span>
+            <span class="progress-number"><b>{$fsc->show_precio($fsc->soportado)}</b></span>
+            <div class="progress sm">
+               <div class="progress-bar progress-bar-red" style='width: {function="round($fsc->soportado/$max*100)"}%'></div>
+            </div>
+         </div>
+         <div class="progress-group">
+            <span class="progress-text">{#FS_IRPF#}</span>
+            <span class="progress-number"><b>{$fsc->show_precio($fsc->irpf)}</b></span>
+            <div class="progress sm">
+               <div class="progress-bar progress-bar-yellow" style='width: {function="round($fsc->irpf/$max*100)"}%'></div>
+            </div>
+         </div>
+         <br />
+         <div class="progress-group">
+            <span class="progress-text">A pagar:</span>
+            <span class="progress-number"><b>{$fsc->show_precio($fsc->diferencia)}</b></span>
+            <div class="progress sm">
+               <div class="progress-bar progress-bar-aqua" style='width: {function="round($fsc->diferencia/$max*100)"}%'></div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-6">
+         <div class="box box-success box-solid">
+            <div class="box-header with-border">
+               <h3 class="box-title">Facturas de venta desde {$fsc->desde} hasta {$fsc->hasta}</h3>
+               <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                     <i class="fa fa-minus"></i>
+                  </button>
+               </div>
+            </div>
+            <div class="box-body">
+               <table id="facturas_c" class="table table-bordered table-striped">
+                  <thead>
+                     <tr>
+                        <th>Codigo</th>
+                        <th class="text-right">Fecha</th>
+                        <th class="text-right">Importe</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {loop="$fsc->facturas"}
+                     <tr>
+                        <td>
+                           <a href="{$value->url()}">
+                              {$value->codigo}&nbsp;
+                              {if="$value->fecha==$fsc->today()"}
+                              <span class="label label-success">Nuevo</span>
+                              {/if}
+                           </a>
+                        </td>
+                        <td class="text-right">{$value->fecha}</td>
+                        <td class="text-right">{$fsc->show_precio($value->total)}</td>
+                     </tr>
+                     {/loop}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="box box-danger box-solid">
+            <div class="box-header with-border">
+               <h3 class="box-title">Facturas de compra desde {$fsc->desde} hasta {$fsc->hasta}</h3>
+               <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                     <i class="fa fa-minus"></i>
+                  </button>
+               </div>
+            </div>
+            <div class="box-body">
+               <table id="facturas" class="table table-bordered table-striped">
+                  <thead>
+                     <tr>
+                        <th>Codigo</th>
+                        <th class="text-right">Fecha</th>
+                        <th class="text-right">Importe</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {loop="$fsc->facturasprov"}
+                     <tr>
+                        <td>
+                           <a href="{$value->url()}">
+                              {$value->codigo}&nbsp;
+                              {if="$value->fecha==$fsc->today()"}
+                              <span class="label label-success">Nuevo</span>
+                              {/if}
+                           </a>
+                        </td>
+                        <td class="text-right">{$value->fecha}</td>
+                        <td class="text-right">{$fsc->show_precio($value->total)}</td>
+                     </tr>
+                     {/loop}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+         <div class="col-md-6">
+            <div class="box">
+               <div class="box-header with-border">
+                  <h3 class="box-title">Albaranes desde {$fsc->desde} hasta {$fsc->hasta}</h3>
+                  <div class="box-tools pull-right">
+                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                     </button>
+                  </div>
+               </div>
+               <div class="box-body">
+                  <a href="index.php?page=ventas_albaranes&mostrar=pendientes" class="btn btn-app">
+                     <span class="badge bg-yellow">{$fsc->albaranes_pendientes()}</span>
+                     <i class="fa fa-sticky-note-o"></i> Albaranes pendientes
+                  </a>
+                  <a href="index.php?page=nueva_venta&tipo=albaran" class="btn btn-app">
+                     <i class="fa fa-plus-circle"></i> Nuevo
+                  </a>
+                  <table id="servicios" class="table table-bordered table-striped">
+                     <thead>
+                        <tr>
+                           <th>Codigo</th>
+                           <th class="text-right">Fecha</th>
+                           <th class="text-right">Importe</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {loop="$fsc->albaranes"}
+                        <tr>
+                           <td>
+                              <a href="{$value->url()}">{$value->codigo}&nbsp;
+                                 {if="$value->fecha==$fsc->today()"}
+                                 <span class="label label-success">Nuevo</span>
+                                 {/if}
+                              </a>
+                           </td>
+                           <td class="text-right">{$value->fecha}</td>
+                           <td class="text-right">{$fsc->show_precio($value->total)}</td>
+                        </tr>
+                        {/loop}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      {if="$fsc->show_servicios"}
+         <div class="col-md-6">
+            <div class="box">
+               <div class="box-header with-border">
+                  <h3 class="box-title">Servicios desde {$fsc->desde} hasta {$fsc->hasta}</h3>
+                  <div class="box-tools pull-right">
+                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                     </button>
+                  </div>
+               </div>
+               <div class="box-body">
+                  <a href="index.php?page=ventas_servicios&estado=1" class="btn btn-app">
+                     <span class="badge bg-yellow">{$fsc->servicios_pendientes()}</span>
+                     <i class="fa fa-wrench"></i> Servicios pendientes
+                  </a>
+                  <a href="index.php?page=nuevo_servicio" class="btn btn-app">
+                     <i class="fa fa-plus-circle"></i> Nuevo
+                  </a>
+                  <table id="servicios" class="table table-bordered table-striped">
+                     <thead>
+                        <tr>
+                           <th>Codigo</th>
+                           <th class="text-right">Fecha</th>
+                           <th class="text-right">Importe</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {loop="$fsc->servicios"}
+                        <tr>
+                           <td>
+                              <a href="{$value->url()}">{$value->codigo}&nbsp;
+                                 {if="$value->fecha==$fsc->today()"}
+                                 <span class="label label-success">Nuevo</span>
+                                 {/if}
+                              </a>
+                           </td>
+                           <td class="text-right">{$value->fecha}</td>
+                           <td class="text-right">{$fsc->show_precio($value->total)}</td>
+                        </tr>
+                        {/loop}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         {/if}
+   </div>
+   {if="$fsc->show_presped"}
+   <div class="row">
+         <div class="col-md-6">
+            <div class="box">
+               <div class="box-header with-border">
+                  <h3 class="box-title">Presupuestos desde {$fsc->desde} hasta {$fsc->hasta}</h3>
+                  <div class="box-tools pull-right">
+                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                     </button>
+                  </div>
+               </div>
+               <div class="box-body">
+                  <a href="index.php?page=ventas_presupuestos&mostrar=pendientes" class="btn btn-app">
+                     <span class="badge bg-yellow">{$fsc->presupuestos_pendientes()}</span>
+                     <i class="fa fa-edit"></i> Presupuestos pendientes
+                  </a>
+                  <a href="index.php?page=nueva_venta&tipo=presupuesto" class="btn btn-app">
+                     <i class="fa fa-plus-circle"></i> Nuevo
+                  </a>
+                  <table id="presupuestos" class="table table-bordered table-striped">
+                     <thead>
+                        <tr>
+                           <th>Codigo</th>
+                           <th class="text-right">Fecha</th>
+                           <th class="text-right">Importe</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {loop="$fsc->presupuestos"}
+                        <tr>
+                           <td>
+                              <a href="{$value->url()}">{$value->codigo}&nbsp;
+                                 {if="$value->fecha==$fsc->today()"}
+                                 <span class="label label-success">Nuevo</span>
+                                 {/if}
+                              </a>
+                           </td>
+                           <td class="text-right">{$value->fecha}</td>
+                           <td class="text-right">{$fsc->show_precio($value->total)}</td>
+                        </tr>
+                        {/loop}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="box">
+               <div class="box-header with-border">
+                  <h3 class="box-title">Pedidos desde {$fsc->desde} hasta {$fsc->hasta}</h3>
+                  <div class="box-tools pull-right">
+                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                     </button>
+                  </div>
+               </div>
+               <div class="box-body">
+                  <a href="index.php?page=ventas_pedidos&mostrar=pendientes" class="btn btn-app">
+                     <span class="badge bg-yellow">{$fsc->pedidos_pendientes()}</span>
+                     <i class="fa fa-cart-arrow-down"></i> Pedidos pendientes
+                  </a>
+                  <a href="index.php?page=nueva_venta&tipo=pedido" class="btn btn-app">
+                     <i class="fa fa-plus-circle"></i> Nuevo
+                  </a>
+                  <table id="pedidos" class="table table-bordered table-striped">
+                     <thead>
+                        <tr>
+                           <th>Codigo</th>
+                           <th class="text-right">Fecha</th>
+                           <th class="text-right">Importe</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {loop="$fsc->pedidos"}
+                        <tr>
+                           <td>
+                              <a href="{$value->url()}">{$value->codigo}&nbsp;
+                                 {if="$value->fecha==$fsc->today()"}
+                                 <span class="label label-success">Nuevo</span>
+                                 {/if}
+                              </a>
+                           </td>
+                           <td class="text-right">{$value->fecha}</td>
+                           <td class="text-right">{$fsc->show_precio($value->total)}</td>
+                        </tr>
+                        {/loop}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+   </div>
+   {/if}
+   {if="$fsc->show_tesoreria"}
+      <div class="row">
+         <div class="col-md-6">
+            <div class="box box-warning box-solid">
+               <div class="box-header box-pane with-border">
+                  <h3 class="box-title">Recibos clientes Pendientes</h3>
+                  <div class="box-tools pull-right">
+                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                     </button>
+                  </div>
+               </div>
+               <div class="box-body">
+                  <div class="row">
+                     <div class="col-sm-8">
+                        <a href="index.php?page=ventas_recibos" class="btn btn-app">
+                           <i class="fa fa-bookmark-o"></i> Recibos clientes
+                        </a>
+                     </div>
+                     <div class="col-sm-4">
+                           <h4>{$fsc->show_precio($fsc->pendiente_clientes)}</h4>
+                           Total pendiente de cobro
+                     </div>
+                  </div>
+                  <table id="servicios" class="table table-bordered table-striped">
+                     <thead>
+                        <tr>
+                           <th>Codigo</th>
+                           <th class="text-right">Emitido</th>
+                           <th class="text-right">Vencimiento</th>
+                           <th class="text-right">Importe</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {loop="$fsc->recibos_clientes"}
+                        <tr>
+                           <td>{$value->codigo}
+                              {if="$value->fecha==$fsc->today()"}
+                              <span class="label label-success">Nuevo</span>
+                              {/if}
+                           </td>
+                           <td class="text-right">{$value->fecha}</td>
+                           <td class="text-right">
+                              {if="$value->fechav==$fsc->today()"}
+                              <b>{$value->fechav}</b>
+                              {else}
+                              {$value->fechav}
+                              {/if}
+                           </td>
+                           <td class="text-right">{$fsc->show_precio($value->importe)}</td>
+                        </tr>
+                        {/loop}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="box box-warning box-solid">
+               <div class="box-header box-pane with-border">
+                  <h3 class="box-title">Recibos Proveedores Pendientes</h3>
+                  <div class="box-tools pull-right">
+                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                     </button>
+                  </div>
+               </div>
+               <div class="box-body">
+                  <div class="row">
+                     <div class="col-sm-8">
+                        <a href="index.php?page=compras_recibos" class="btn btn-app">
+                           <i class="fa fa-bookmark-o"></i> Recibos Proveedor
+                        </a>
+                     </div>
+                     <div class="col-sm-4">
+                           <h4>{$fsc->show_precio($fsc->pendiente_proveedores)}</h4>
+                           Total pendiente de pago
+                     </div>
+                  </div>
+                  <table id="servicios" class="table table-bordered table-striped">
+                     <thead>
+                        <tr>
+                           <th>Codigo</th>
+                           <th class="text-right">Emitido</th>
+                           <th class="text-right">Vencimiento</th>
+                           <th class="text-right">Importe</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {loop="$fsc->recibos_proveedores"}
+                        <tr>
+                           <td>{$value->codigo}
+                              {if="$value->fecha==$fsc->today()"}
+                              <span class="label label-success">Nuevo</span>
+                              {/if}
+                           </td>
+                           <td class="text-right">{$value->fecha}</td>
+                           <td class="text-right">
+                              {if="$value->fechav==$fsc->today()"}
+                              <b>{$value->fechav}</b>
+                              {else}
+                              {$value->fechav}
+                              {/if}
+                           </td>
+                           <td class="text-right">{$fsc->show_precio($value->importe)}</td>
+                        </tr>
+                        {/loop}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      {/if}
+</div>
+
+<script>
+   $(function () {
+   $('#facturas,#facturas_c,#presupuestos,#pedidos,#servicios').DataTable({
+           "paging": true,
+           "lengthChange": false,
+           "searching": true,
+           "ordering": true,
+           "info": true,
+           "autoWidth": false,
+           'pageLength': 5,
+           "language": {
+           "url": "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json"
+           },
+   });
+   });</script>
+<script>
+   $(document).ready(function () {
+   var data = {
+   labels: {$fsc-> labels_chart()},
+           datasets: [
+           {
+           label: "Facturas Venta",
+                   fillColor: "rgba(0,166,90,1) ",
+                   strokeColor: "rgba(0,166,90,1) ",
+                   pointColor: "rgba(210, 214, 222, 1)",
+                   pointStrokeColor: "#c1c7d1",
+                   pointHighlightFill: "#fff",
+                   pointHighlightStroke: "rgba(220,220,220,1)",
+                   data: {$fsc->data_chart('facturascli')}
+           },
+           {
+           label: "Facturas Compra",
+                   fillColor: "rgba(221,75,57,1)",
+                   strokeColor: "rgba(221,75,57,1)",
+                   pointColor: "#3b8bba",
+                   pointStrokeColor: "rgba(60,141,188,1)",
+                   pointHighlightFill: "#fff",
+                   pointHighlightStroke: "rgba(60,141,188,1)",
+                   data: {$fsc->data_chart('facturasprov')}
+           }
+           ]
+   };
+   var options = {
+   //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+   scaleBeginAtZero: true,
+           //Boolean - Whether grid lines are shown across the chart
+           scaleShowGridLines: true,
+           //String - Colour of the grid lines
+           scaleGridLineColor: "rgba(0,0,0,.05)",
+           //Number - Width of the grid lines
+           scaleGridLineWidth: 1,
+           //Boolean - Whether to show horizontal lines (except X axis)
+           scaleShowHorizontalLines: true,
+           //Boolean - Whether to show vertical lines (except Y axis)
+           scaleShowVerticalLines: true,
+           //Boolean - If there is a stroke on each bar
+           barShowStroke: true,
+           //Number - Pixel width of the bar stroke
+           barStrokeWidth: 2,
+           //Number - Spacing between each of the X value sets
+           barValueSpacing: 5,
+           //Number - Spacing between data sets within X values
+           barDatasetSpacing: 1,
+           //String - A legend template
+           legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+           //Boolean - whether to make the chart responsive
+           responsive: true,
+           maintainAspectRatio: true,
+           // String - Template string for single tooltips
+           tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
+           // String - Template string for multiple tooltips
+           multiTooltipTemplate: "<%= value + ' {$fsc->simbolo_divisa()}' %>",
+           scaleLabel: "<%= value + ' {$fsc->simbolo_divisa()}' %>",
+   };
+   //Get the context of the canvas element we want to select
+   var c = $('#myChart');
+   var ct = c.get(0).getContext('2d');
+   var ctx = document.getElementById("myChart").getContext("2d");
+   /*********************/
+   new Chart(ctx).Bar(data, options);
+   });
+</script>
+
+{include="footer"}

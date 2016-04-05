@@ -1,0 +1,39 @@
+      <br/>
+      {if="FS_DB_HISTORY"}
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-sm-12">
+               <div class="panel panel-default hidden-print">
+                  <div class="panel-heading">
+                     <h3 class="panel-title">Consultas SQL:</h3>
+                  </div>
+                  <div class="panel-body">
+                     <ol style="font-size: 11px; margin: 0px; padding: 0px 0px 0px 20px;">
+                        {loop="$fsc->get_db_history()"}<li>{$value}</li>{/loop}
+                     </ol>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      {/if}
+      </div>
+      <footer class="main-footer hidden-print">
+         <div class="pull-right hidden-xs">
+            <b>Version</b> {$fsc->version()}
+         </div>
+            <small>
+               © 2016 ECON
+            </small>
+         <span class="label label-default">Consultas: {$fsc->selects()}</span>
+         <span class="label label-default">Transacciones: {$fsc->transactions()}</span>
+         <span class="label label-default">
+            <span class="glyphicon glyphicon-time" aria-hidden="true" title="Página procesada en {$fsc->duration()}"></span>
+            &nbsp; {$fsc->duration()}
+         </span>
+      </footer>
+      <aside class="control-sidebar control-sidebar-dark"></aside>
+      <div class="control-sidebar-bg"></div>
+    </div>
+</body>
+</html>
