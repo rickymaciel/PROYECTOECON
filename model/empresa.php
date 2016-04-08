@@ -200,7 +200,7 @@ class empresa extends fs_model
               ."codalmacen,codpago,coddivisa,codejercicio,web,email,fax,telefono,codpais,apartado,provincia,"
               ."ciudad,codpostal,direccion,administrador,codedi,cifnif,nombre,nombrecorto,lema,horario)"
               ."VALUES (NULL,FALSE,NULL,'A','ALG','CONT','EUR','0001','',"
-              ."NULL,NULL,NULL,'ESP',NULL,NULL,NULL,NULL,'C/ Falsa, 123','',NULL,'000000001','EASY CONTABILIDAD',"
+              ."NULL,NULL,NULL,'ESP',NULL,NULL,NULL,NULL,'C/ Falsa, 123','',NULL,'000000001','E CONTABILIDAD',"
               ."'ECON','','');";
    }
    

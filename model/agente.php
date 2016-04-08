@@ -127,7 +127,7 @@ class agente extends fs_model
    {
       $this->clean_cache();
       return "INSERT INTO ".$this->table_name." (codagente,nombre,apellidos,dnicif,email)
-         VALUES ('1','Ricky','Maciel','000000001','rmacielb3@gmail.com');";
+         VALUES ('1','','','000000001','');";
    }
    
    public function get_fullname()

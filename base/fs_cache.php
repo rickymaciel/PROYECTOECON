@@ -171,9 +171,7 @@ class fs_cache
             self::$memcache = NULL;
             self::$connected = FALSE;
             self::$error = TRUE;
-            self::$error_msg = 'Clase Memcache no encontrada. Debes
-               <a target="_blank" href="//www.facturascripts.com/comm3/index.php?page=community_item&id=553">
-               instalar Memcache</a> y activarlo en el php.ini';
+            self::$error_msg = 'Clase Memcache no encontrada. Debes instalar Memcache</a> y activarlo en el php.ini';
          }
       }
       

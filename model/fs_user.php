@@ -176,12 +176,12 @@ class fs_user extends fs_model
       if( $this->db->select("SELECT * FROM agentes WHERE codagente = '1';") )
       {
          return "INSERT INTO ".$this->table_name." (nick,password,log_key,codagente,admin,email)
-            VALUES ('admin','".sha1('admin')."',NULL,'1',TRUE,'rmacielb3@gmail.com');";
+            VALUES ('admin','".sha1('admin')."',NULL,'1',TRUE,'');";
       }
       else
       {
          return "INSERT INTO ".$this->table_name." (nick,password,log_key,codagente,admin,email)
-            VALUES ('admin','".sha1('admin')."',NULL,'1',TRUE,'rmacielb3@gmail.com');";
+            VALUES ('admin','".sha1('admin')."',NULL,'1',TRUE,'');";
       }
    }
    

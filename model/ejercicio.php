@@ -42,15 +42,11 @@ class ejercicio extends fs_model
    public $idasientoapertura;
    
    /**
-    * Identifica el plan contable utilizado. Esto solamente es necesario
-    * para dar compatibilidad con Eneboo. En FacturaScripts no se utiliza.
     * @var type 
     */
    public $plancontable;
    
    /**
-    * Longitud de caracteres de las subcuentas asignadas. Esto solamente es necesario
-    * para dar compatibilidad con Eneboo. En FacturaScripts no se utiliza.
     * @var type 
     */
    public $longsubcuenta;

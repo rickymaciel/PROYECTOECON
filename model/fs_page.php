@@ -2,7 +2,7 @@
 
 
 /**
- * Elemento del menú de FacturaScripts.
+ * Elemento del menú de ECON.
  */
 class fs_page extends fs_model
 {
