@@ -50,9 +50,9 @@ class divisa extends fs_model
          $this->codiso = $d['codiso'];
          $this->simbolo = $d['simbolo'];
          
-         if($this->simbolo == '' AND $this->coddivisa == 'EUR')
+         if($this->simbolo == '' AND $this->coddivisa == 'PYG')
          {
-            $this->simbolo = '€';
+            $this->simbolo = 'Gs.';
             $this->save();
          }
       }
@@ -87,7 +87,9 @@ class divisa extends fs_model
            "INSERT INTO ".$this->table_name." (coddivisa,descripcion,tasaconv,codiso,simbolo)
          VALUES ('PEN','NUEVOS SOLES','3.52','604','S/.');".
            "INSERT INTO ".$this->table_name." (coddivisa,descripcion,tasaconv,codiso,simbolo)
-         VALUES ('VEF','BOLÍVARES','38.17','937','Bs');";
+         VALUES ('VEF','BOLÍVARES','38.17','937','Bs');".
+           "INSERT INTO ".$this->table_name." (coddivisa,descripcion,tasaconv,codiso,simbolo)
+         VALUES ('PYG','GUARANÍES','5780','600','Gs. ');";
    }
    
    public function url()

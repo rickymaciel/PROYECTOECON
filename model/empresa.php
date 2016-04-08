@@ -199,8 +199,8 @@ class empresa extends fs_model
       return "INSERT INTO ".$this->table_name." (stockpedidos,contintegrada,recequivalencia,codserie,"
               ."codalmacen,codpago,coddivisa,codejercicio,web,email,fax,telefono,codpais,apartado,provincia,"
               ."ciudad,codpostal,direccion,administrador,codedi,cifnif,nombre,nombrecorto,lema,horario)"
-              ."VALUES (NULL,FALSE,NULL,'A','ALG','CONT','EUR','0001','',"
-              ."NULL,NULL,NULL,'ESP',NULL,NULL,NULL,NULL,'C/ Falsa, 123','',NULL,'000000001','E CONTABILIDAD',"
+              ."VALUES (NULL,FALSE,NULL,'A','ALG','CONT','PYG','0001','',"
+              ."NULL,NULL,NULL,'PRY',NULL,NULL,NULL,NULL,'','',NULL,'','E CONTABILIDAD',"
               ."'ECON','','');";
    }
    
