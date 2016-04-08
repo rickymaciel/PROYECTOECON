@@ -260,6 +260,7 @@ $system_info = str_replace('"', "'", $system_info);
          else
          {
             document.f_configuracion_inicial.db_port.value = '3306';
+            document.f_configuracion_inicial.db_user.value = 'root';
             $("#mysql_socket").show();
          }
       }
@@ -496,7 +497,7 @@ $system_info = str_replace('"', "'", $system_info);
                         Base de datos
                      </a>
                   </li>
-                  <li role="presentation">
+                  <li class="hidden" role="presentation">
                      <a href="#cache" aria-controls="cache" role="tab" data-toggle="tab">
                         <i class="fa fa-tachometer"></i>&nbsp;
                         Memcached
@@ -550,7 +551,7 @@ $system_info = str_replace('"', "'", $system_info);
                      </div>
                   </div>
                </div>
-               <div class="row">
+               <div class="row hidden">
                   <div class="col-sm-4">
                      <div id="mysql_socket" class="form-group">
                         Socket:
